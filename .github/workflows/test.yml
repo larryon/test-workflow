@@ -17,10 +17,23 @@ jobs:
         if: ${{ failure() }}
         run: echo "This step requires manual intervention"
 
+      - name: Manual Intervention Approval
+        if: steps.manual_step.conclusion == 'failure'
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const { data: { html_url: pullRequestUrl } } = await github.rest.pulls.createReviewRequest({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number
+            });
+            core.setOutput('pullRequestUrl', pullRequestUrl)
+
+
       - name: Resume Step
-        if: steps.manual_step.conclusion == 'success'
+        if: steps.manual_step.conclusion == 'success' || steps.manual_intervention_approval.outputs.pullRequestUrl
         run: echo "Resuming from manual intervention"
 
       - name: Automatic Step
-        if: steps.manual_step.conclusion == 'failure' || steps.manual_step.conclusion == 'skipped'
+        if: steps.manual_step.conclusion == 'failure' && !steps.manual_intervention_approval.outputs.pullRequestUrl
         run: echo "This step will run automatically when manual intervention is not required"
