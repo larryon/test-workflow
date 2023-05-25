@@ -33,3 +33,4 @@ jobs:
       - name: Automatic Step
         if: steps.manual_step.conclusion == 'failure' && !steps.manual_intervention_approval.outputs.pullRequestUrl
         run: echo "This step will run automatically when manual intervention is not required"
+
