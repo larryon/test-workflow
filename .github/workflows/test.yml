@@ -1,20 +1,14 @@
 name: My Workflow
 
-on: [push]
+on: workflow_call
 
 jobs:
   job1:
     runs-on: ubuntu-latest
-    steps: &steps
+    steps: 
       - name: Step 1
         run: echo "This is step 1"
 
       - name: Step 2
         run: echo "This is step 2"
 
-  job2:
-    runs-on: ubuntu-latest
-    steps: *steps
-
-      - name: Additional Step for job2
-        run: echo "This is an additional step for job2"

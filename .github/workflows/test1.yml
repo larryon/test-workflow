@@ -1,0 +1,12 @@
+name: My Workflow
+
+on: push
+
+jobs:
+  testing:
+    uses: ./.github/workflows/test.yml
+    steps: 
+      - name: Step 3
+        run: echo "This is step 3"
+
+
