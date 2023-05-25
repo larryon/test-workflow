@@ -12,19 +12,21 @@ jobs:
         run: echo "This is step 2"
 
   job1:
+    needs: reusable-steps
     runs-on: ubuntu-latest
     steps:
       - name: Reuse Steps from job 'reusable-steps'
-        uses: reusable-steps
+        run: echo "Reusing steps from reusable-steps job"
 
       - name: Additional Step for job1
         run: echo "This is an additional step for job1"
 
   job2:
+    needs: reusable-steps
     runs-on: ubuntu-latest
     steps:
       - name: Reuse Steps from job 'reusable-steps'
-        uses: reusable-steps
+        run: echo "Reusing steps from reusable-steps job"
 
       - name: Additional Step for job2
         run: echo "This is an additional step for job2"
