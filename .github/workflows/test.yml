@@ -12,13 +12,9 @@ jobs:
       - name: Step 2
         run: exit 1
 
-      - name: Manual Intervention Step
+      - name: Manual Intervention Approval
         id: manual_step
         if: ${{ failure() }}
-        run: echo "This step requires manual intervention"
-
-      - name: Manual Intervention Approval
-        if: steps.manual_step.conclusion == 'failure'
         uses: actions/github-script@v5
         with:
           script: |
