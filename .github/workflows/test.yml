@@ -1,6 +1,8 @@
 name: My Workflow
 
-on: [pull_request]
+on:
+  push:
+  pull_request:
 
 jobs:
   my_job:
@@ -18,13 +20,19 @@ jobs:
         uses: actions/github-script@v5
         with:
           script: |
-            const { data: { html_url: pullRequestUrl } } = await github.rest.pulls.createReviewRequest({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: context.payload.pull_request.number
-            });
-            core.setOutput('pullRequestUrl', pullRequestUrl)
-
+            // Check if it's a pull request event
+            if (context.payload.pull_request) {
+              const response = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'Manual Intervention Required',
+                head: context.sha,
+                base: context.payload.pull_request.base.ref
+              });
+              core.setOutput('pullRequestUrl', response.data.html_url);
+            } else {
+              core.setOutput('pullRequestUrl', '');
+            }
 
       - name: Resume Step
         if: steps.manual_step.conclusion == 'success' || steps.manual_intervention_approval.outputs.pullRequestUrl
@@ -33,4 +41,3 @@ jobs:
       - name: Automatic Step
         if: steps.manual_step.conclusion == 'failure' && !steps.manual_intervention_approval.outputs.pullRequestUrl
         run: echo "This step will run automatically when manual intervention is not required"
-
