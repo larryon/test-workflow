@@ -1,0 +1,26 @@
+name: My Workflow
+
+on: [push]
+
+jobs:
+  my_job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1
+        run: echo "Step 1"
+
+      - name: Step 2
+        run: echo "Step 2"
+
+      - name: Manual Intervention Step
+        id: manual_step
+        if: ${{ failure() }}
+        run: echo "This step requires manual intervention"
+
+      - name: Resume Step
+        if: steps.manual_step.conclusion == 'success'
+        run: echo "Resuming from manual intervention"
+
+      - name: Automatic Step
+        if: steps.manual_step.conclusion == 'failure' || steps.manual_step.conclusion == 'skipped'
+        run: echo "This step will run automatically when manual intervention is not required"
