@@ -7,5 +7,5 @@ jobs:
     name: Run CD pipeline
     uses: ./.github/workflows/test1.yml
     with:
-      releaseEnv: test
+      releaseEnv: staging
       version: trigger_from_test.yml
