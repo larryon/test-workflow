@@ -11,10 +11,11 @@ on:
   workflow_call:
     inputs:
       releaseEnv:
-        type: environment
+        type: string
         description: 'What Env to release'
         required: true
       version:
+        type: string
         required: true
 jobs:
   Deploy_dev:
