@@ -26,7 +26,7 @@ jobs:
   Deploy_dev:
     name: "Dev deploy - version ${{  inputs.version }} "
     environment: dev
-    if: github.event.inputs.releaseEnv == 'dev'
+    if: inputs.releaseEnv == 'dev'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -34,7 +34,7 @@ jobs:
   Deploy_test:
     name: "Test deploy - version ${{  inputs.version }}"
     environment: test
-    if: github.event.inputs.releaseEnv == 'test' || github.event.inputs.releaseEnv == 'prod' || github.event.inputs.releaseEnv == 'Staging'
+    if: inputs.releaseEnv == 'test' || inputs.releaseEnv == 'prod' || inputs.releaseEnv == 'Staging'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -42,7 +42,7 @@ jobs:
   Deploy_staging:
     name: "Staging Deploy - version ${{  inputs.version }}"
     environment: staging
-    if: github.event.inputs.releaseEnv == 'staging' || github.event.inputs.releaseEnv == 'prod'
+    if: inputs.releaseEnv == 'staging' || inputs.releaseEnv == 'prod'
     needs: [Deploy_test]
     runs-on: ubuntu-latest
     steps:
@@ -51,7 +51,7 @@ jobs:
   Deploy_prod:
     name: "Prod Deploy - version ${{  inputs.version }}"
     environment: prod
-    if: github.event.inputs.releaseEnv == 'prod'
+    if: inputs.releaseEnv == 'prod'
     runs-on: ubuntu-latest
     needs: [Deploy_staging,Deploy_test]
     steps:
