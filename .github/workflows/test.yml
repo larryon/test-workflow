@@ -1,0 +1,11 @@
+name: main
+on:
+  workflow_dispatch:
+
+jobs:
+  run-cd:
+    name: Run CD pipeline
+    uses: ./.github/workflows/test1.yml
+    with:
+      releaseEnv: "test"
+      version: "123123"
