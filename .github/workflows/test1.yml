@@ -34,7 +34,7 @@ jobs:
   Deploy_test:
     name: "Test deploy - version ${{  inputs.version }}"
     environment: test
-    if: inputs.releaseEnv == 'test' || inputs.releaseEnv == 'prod' || inputs.releaseEnv == 'Staging'
+    if: inputs.releaseEnv == 'test' || inputs.releaseEnv == 'prod' || inputs.releaseEnv == 'staging'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
