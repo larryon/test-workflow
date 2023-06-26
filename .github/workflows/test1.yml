@@ -11,14 +11,12 @@ jobs:
     name: "Dev deploy"
     environment: dev
     runs-on: ubuntu-latest
-    if: github.event.inputs.releaseEnv == 'dev'
     steps:
       - name: Deploy
         run: echo Deploying to dev
   Deploy_test:
     name: "Test deploy"
     environment: test
-    if: github.event.inputs.releaseEnv == 'test'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -26,7 +24,6 @@ jobs:
   Deploy_staging:
     name: "Staging Deploy"
     environment: staging
-    if: github.event.inputs.releaseEnv == 'staging'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -35,7 +32,6 @@ jobs:
     name: "Prod Deploy"
     environment: prod
     runs-on: ubuntu-latest
-    if: github.event.inputs.releaseEnv == 'prod' && needs.Deploy_test.result == 'success' && needs.Deploy_staging.result == 'success'
     needs: [Deploy_test, Deploy_staging]
     steps:
       - name: Deploy
