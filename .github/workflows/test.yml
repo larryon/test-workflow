@@ -8,4 +8,4 @@ jobs:
     uses: ./.github/workflows/test1.yml
     with:
       releaseEnv: staging
-      version: trigger_from_test.yml
+      version: master.bbb0f1b0c
