@@ -3,15 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       releaseEnv:
-        type: choice
+        type: environment
         description: 'What Env to release'
         required: true
-        options:
-        - dev
-        - test
-        - staging
-        - prod
-
 jobs:
   Deploy_dev:
     name: "Dev deploy"
