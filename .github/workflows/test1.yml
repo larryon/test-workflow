@@ -33,7 +33,6 @@ jobs:
     name: "Staging Deploy"
     environment: staging
     if: github.event.inputs.releaseEnv == 'staging'
-    needs: [Deploy_test]
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
