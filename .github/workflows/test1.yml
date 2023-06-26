@@ -6,9 +6,11 @@ on:
         type: environment
         description: 'What Env to release'
         required: true
+      version:
+        required: true
 jobs:
   Deploy_dev:
-    name: "Dev deploy"
+    name: "Dev deploy - ${{ version github.event.inputs.version }} "
     environment: dev
     if: github.event.inputs.releaseEnv == 'dev'
     runs-on: ubuntu-latest
