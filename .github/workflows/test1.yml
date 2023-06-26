@@ -8,6 +8,14 @@ on:
         required: true
       version:
         required: true
+  workflow_call:
+    inputs:
+      releaseEnv:
+        type: environment
+        description: 'What Env to release'
+        required: true
+      version:
+        required: true
 jobs:
   Deploy_dev:
     name: "Dev deploy - version ${{  github.event.inputs.version }} "
@@ -18,7 +26,7 @@ jobs:
       - name: Deploy
         run: echo Deploying to dev
   Deploy_test:
-    name: "Test deploy"
+    name: "Test deploy - version ${{  github.event.inputs.version }}"
     environment: test
     if: github.event.inputs.releaseEnv == 'test' || github.event.inputs.releaseEnv == 'prod' || github.event.inputs.releaseEnv == 'Staging'
     runs-on: ubuntu-latest
@@ -26,7 +34,7 @@ jobs:
       - name: Deploy
         run: echo Deploying to test
   Deploy_staging:
-    name: "Staging Deploy"
+    name: "Staging Deploy - version ${{  github.event.inputs.version }}"
     environment: staging
     if: github.event.inputs.releaseEnv == 'staging' || github.event.inputs.releaseEnv == 'prod'
     needs: [Deploy_test]
@@ -35,7 +43,7 @@ jobs:
       - name: Deploy
         run: echo Deploying to Staging
   Deploy_prod:
-    name: "Prod Deploy"
+    name: "Prod Deploy - version ${{  github.event.inputs.version }}"
     environment: prod
     if: github.event.inputs.releaseEnv == 'prod'
     runs-on: ubuntu-latest
