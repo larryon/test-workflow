@@ -41,7 +41,7 @@ jobs:
     name: "Prod Deploy"
     environment: Prod
     if: github.event.inputs.releaseEnv == 'Prod'
-    needs: [Deploy_test,Deploy_staging]
+    needs: [Deploy_test, Deploy_staging]
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
