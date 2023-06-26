@@ -2,22 +2,29 @@ name: main
 on:
   workflow_dispatch:
     inputs:
-      releaseType:
-        description: 'What ENv to release'
+      releaseEnv:
+        type: choice
+        description: 'What Env to release'
         required: true
-        default: 'test'
+        options:
+        - dev
+        - test
+        - staging
+        - prod
 
 jobs:
   Deploy_dev:
     name: "Dev deploy"
     environment: dev
     runs-on: ubuntu-latest
+    if: github.event.inputs.releaseEnv == 'dev'
     steps:
       - name: Deploy
         run: echo Deploying to dev
   Deploy_test:
     name: "Test deploy"
     environment: test
+    if: github.event.inputs.releaseEnv == 'test'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -25,6 +32,7 @@ jobs:
   Deploy_staging:
     name: "Staging Deploy"
     environment: staging
+    if: github.event.inputs.releaseEnv == 'staging'
     needs: [Deploy_test]
     runs-on: ubuntu-latest
     steps:
@@ -33,6 +41,7 @@ jobs:
   Deploy_prod:
     name: "Prod Deploy"
     environment: Prod
+    if: github.event.inputs.releaseEnv == 'Prod'
     needs: [Deploy_test,Deploy_staging]
     runs-on: ubuntu-latest
     steps:
