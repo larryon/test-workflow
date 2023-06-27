@@ -103,11 +103,16 @@ jobs:
     name: "Staging Deploy ${{  needs.get-env.outputs.version }}"
     environment: staging
     if: |
-        needs.Build.result == 'skipped'||
-        github.event.pull_request.merged == true ||
-        (
-          needs.get-env.outputs.releaseEnv == 'staging' ||
-          needs.get-env.outputs.releaseEnv == 'prod'
+        always() &&
+        !contains(needs.*.result, 'failure') &&
+        !contains(needs.*.result, 'cancelled') &&
+        )
+          needs.Build.result == 'skipped'||
+          github.event.pull_request.merged == true ||
+          (
+            needs.get-env.outputs.releaseEnv == 'staging' ||
+            needs.get-env.outputs.releaseEnv == 'prod'
+          )
         )
         
     needs: [Deploy_test, get-env]
@@ -119,9 +124,14 @@ jobs:
     name: "Prod Deploy ${{ needs.get-env.outputs.version }}"
     environment: prod
     if: |
-      needs.Build.result == 'skipped' ||
-      github.event.pull_request.merged == true || 
-      needs.get-env.outputs.releaseEnv == 'prod'
+      always() &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled') &&
+      (
+        needs.Build.result == 'skipped' ||
+        github.event.pull_request.merged == true || 
+        needs.get-env.outputs.releaseEnv == 'prod'
+      )
     runs-on: ubuntu-latest
     needs: [Deploy_staging, Deploy_test, get-env]
     steps:
