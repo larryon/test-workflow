@@ -22,11 +22,14 @@ on:
       version:
         type: string
         required: true
+  pull_request:
+    types:
+      - closed
 jobs:
   Deploy_dev:
     name: "Dev deploy ${{  inputs.version }} "
     environment: dev
-    if: inputs.releaseEnv == 'dev'
+    if: github.event.pull_request.merged == true && inputs.releaseEnv == 'dev'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -34,7 +37,13 @@ jobs:
   Deploy_test:
     name: "Test deploy ${{  inputs.version }}"
     environment: test
-    if: inputs.releaseEnv == 'test' || inputs.releaseEnv == 'prod' || inputs.releaseEnv == 'staging'
+    if: |
+      github.event.pull_request.merged == 'true' &&
+        (
+        inputs.releaseEnv == 'test' ||
+        inputs.releaseEnv == 'prod' ||
+        inputs.releaseEnv == 'staging'
+        )
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -42,7 +51,12 @@ jobs:
   Deploy_staging:
     name: "Staging Deploy ${{  inputs.version }}"
     environment: staging
-    if: inputs.releaseEnv == 'staging' || inputs.releaseEnv == 'prod'
+    if: |
+      github.event.pull_request.merged == 'true' &&
+      (
+      inputs.releaseEnv == 'staging' ||
+      inputs.releaseEnv == 'prod'
+      )
     needs: [Deploy_test]
     runs-on: ubuntu-latest
     steps:
@@ -51,7 +65,9 @@ jobs:
   Deploy_prod:
     name: "Prod Deploy ${{  inputs.version }}"
     environment: prod
-    if: inputs.releaseEnv == 'prod'
+    if: |
+      github.event.pull_request.merged == 'true' && 
+      inputs.releaseEnv == 'prod'
     runs-on: ubuntu-latest
     needs: [Deploy_staging,Deploy_test]
     steps:
