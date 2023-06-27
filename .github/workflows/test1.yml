@@ -6,6 +6,7 @@ on:
         type: choice
         description: 'What Env to release'
         required: true
+        default: prod
         options:
           - dev
           - test
