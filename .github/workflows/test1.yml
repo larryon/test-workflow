@@ -44,18 +44,20 @@ jobs:
         run: |
           if [ -z "${releaseEnv}" ]; then
             releaseEnv=prod
+            echo "$releaseEnv"
           else
             env=$releaseEnv
+            echo "$releaseEnv"
           fi
           if [ -z "${version}" ]; then
             version=1
           else
-            echo "Not ok"
+            echo "Version ${version}"
           fi
           echo "releaseEnv=$releaseEnv" >> $GITHUB_OUTPUT
           echo "version=$version" >> $GITHUB_OUTPUT
   Deploy_dev:
-    name: "Dev deploy ${{  needs.get-env.outputs.version }} "
+    name: "Dev deploy ${{ needs.get-env.outputs.version }} "
     environment: dev
     needs: [get-env]
     if: github.event.pull_request.merged == true && needs.get-env.outputs.releaseEnv == 'dev'
