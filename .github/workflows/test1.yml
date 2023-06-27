@@ -66,7 +66,7 @@ jobs:
       - name: Deploy
         run: echo Deploying to dev
   Deploy_test:
-    name: "Test deploy ${{  inputs.version }}"
+    name: "Test deploy ${{ needs.get-env.outputs.version }}"
     environment: test
     needs: [get-env]
     if: |
