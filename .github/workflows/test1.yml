@@ -72,7 +72,6 @@ jobs:
     needs: [get-env, Build]
     if: |      
         needs.get-env.outputs.releaseEnv == 'dev' || 
-        github.event.pull_request.merged == true ||
         needs.Build.result == 'skipped'
     runs-on: ubuntu-latest
     steps:
@@ -107,7 +106,6 @@ jobs:
         !contains(needs.*.result, 'failure') &&
         !contains(needs.*.result, 'cancelled') &&
         (
-          needs.Build.result == 'skipped'||
           github.event.pull_request.merged == true ||
           (
             needs.get-env.outputs.releaseEnv == 'staging' ||
@@ -128,7 +126,6 @@ jobs:
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled') &&
       (
-        needs.Build.result == 'skipped' ||
         github.event.pull_request.merged == true || 
         needs.get-env.outputs.releaseEnv == 'prod'
       )
