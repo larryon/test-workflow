@@ -71,8 +71,11 @@ jobs:
     environment: dev
     needs: [get-env, Build]
     if: |
-      needs.get-env.outputs.releaseEnv == 'dev' || 
-      github.event.pull_request.merged == true
+      always() &&
+      (
+        needs.get-env.outputs.releaseEnv == 'dev' || 
+        github.event.pull_request.merged == true
+      )
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -82,11 +85,14 @@ jobs:
     environment: test
     needs: [get-env, Build]
     if: |
-        github.event.pull_request.merged == true ||
+        always() && 
         (
-          needs.get-env.outputs.releaseEnv == 'test' ||
-          needs.get-env.outputs.releaseEnv == 'prod' ||
-          needs.get-env.outputs.releaseEnv == 'staging'
+          github.event.pull_request.merged == true ||
+          (
+            needs.get-env.outputs.releaseEnv == 'test' ||
+            needs.get-env.outputs.releaseEnv == 'prod' ||
+            needs.get-env.outputs.releaseEnv == 'staging'
+          )
         )
     runs-on: ubuntu-latest
     steps:
