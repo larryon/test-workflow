@@ -48,6 +48,7 @@ jobs:
           else
             env=$releaseEnv
             echo "$releaseEnv"
+            echo ${{ github.event.pull_request.merged }}
           fi
           if [ -z "${version}" ]; then
             version=1
