@@ -106,7 +106,7 @@ jobs:
         always() &&
         !contains(needs.*.result, 'failure') &&
         !contains(needs.*.result, 'cancelled') &&
-        )
+        (
           needs.Build.result == 'skipped'||
           github.event.pull_request.merged == true ||
           (
