@@ -70,9 +70,14 @@ jobs:
     name: "Dev deploy ${{ needs.get-env.outputs.version }} "
     environment: dev
     needs: [get-env, Build]
-    if: |      
-        needs.get-env.outputs.releaseEnv == 'dev' || 
-        needs.Build.result == 'skipped'
+    if: |
+        always() &&
+        !contains(needs.*.result, 'failure') &&
+        !contains(needs.*.result, 'cancelled') &&
+        (
+          needs.get-env.outputs.releaseEnv == 'dev' || 
+          needs.Build.result == 'skipped'
+        )
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
