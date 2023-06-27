@@ -51,7 +51,7 @@ jobs:
             echo ${{ github.event.pull_request.merged }}
           fi
           if [ -z "${version}" ]; then
-            version=$(${GITHUB_SHA} | cut -c1-8`)
+            version=$(echo ${GITHUB_SHA} | cut -c1-8)
           else
             echo "Version ${version}"
           fi
