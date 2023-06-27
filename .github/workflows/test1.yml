@@ -73,7 +73,7 @@ jobs:
     if: |      
         needs.get-env.outputs.releaseEnv == 'dev' || 
         github.event.pull_request.merged == true ||
-        jobs.Build.result == 'skipped'
+        needs.Build.result == 'skipped'
       
     runs-on: ubuntu-latest
     steps:
@@ -84,7 +84,7 @@ jobs:
     environment: test
     needs: [get-env, Build]
     if: |
-        jobs.Build.result == 'skipped' || 
+        needs.Build.result == 'skipped' || 
         github.event.pull_request.merged == true ||
         (
           needs.get-env.outputs.releaseEnv == 'test' ||
@@ -100,7 +100,7 @@ jobs:
     name: "Staging Deploy ${{  needs.get-env.outputs.version }}"
     environment: staging
     if: |
-        jobs.Build.result == 'skipped'||
+        needs.Build.result == 'skipped'||
         github.event.pull_request.merged == true ||
         (
           needs.get-env.outputs.releaseEnv == 'staging' ||
@@ -116,7 +116,7 @@ jobs:
     name: "Prod Deploy ${{ needs.get-env.outputs.version }}"
     environment: prod
     if: |
-      jobs.Build.result == 'skipped' ||
+      needs.Build.result == 'skipped' ||
       github.event.pull_request.merged == true || 
       needs.get-env.outputs.releaseEnv == 'prod'
     runs-on: ubuntu-latest
