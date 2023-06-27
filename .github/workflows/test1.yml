@@ -60,7 +60,7 @@ jobs:
     name: "Dev deploy ${{ needs.get-env.outputs.version }} "
     environment: dev
     needs: [get-env]
-    if: github.event.pull_request.merged == true && needs.get-env.outputs.releaseEnv == 'dev'
+    if: needs.get-env.outputs.releaseEnv == 'dev'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -70,12 +70,9 @@ jobs:
     environment: test
     needs: [get-env]
     if: |
-      github.event.pull_request.merged == 'true' &&
-        (
         needs.get-env.outputs.releaseEnv == 'test' ||
         needs.get-env.outputs.releaseEnv == 'prod' ||
         needs.get-env.outputs.releaseEnv == 'staging'
-        )
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -84,11 +81,8 @@ jobs:
     name: "Staging Deploy ${{  needs.get-env.outputs.version }}"
     environment: staging
     if: |
-      github.event.pull_request.merged == 'true' &&
-      (
       needs.get-env.outputs.releaseEnv == 'staging' ||
       needs.get-env.outputs.releaseEnv == 'prod'
-      )
     needs: [Deploy_test, get-env]
     runs-on: ubuntu-latest
     steps:
