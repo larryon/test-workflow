@@ -51,17 +51,28 @@ jobs:
             echo ${{ github.event.pull_request.merged }}
           fi
           if [ -z "${version}" ]; then
-            version=1
+            version=$(git rev-parse --short HEAD)
           else
             echo "Version ${version}"
           fi
           echo "releaseEnv=$releaseEnv" >> $GITHUB_OUTPUT
           echo "version=$version" >> $GITHUB_OUTPUT
+  Build:
+    name: "Building ${{ needs.get-env.outputs.version }}"
+    if: |
+      github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    needs: [get-env]
+    steps:
+      - name: Deploy
+        run: echo "Triggering build with version ${{ needs.get-env.outputs.version }}"
   Deploy_dev:
     name: "Dev deploy ${{ needs.get-env.outputs.version }} "
     environment: dev
-    needs: [get-env]
-    if: needs.get-env.outputs.releaseEnv == 'dev'
+    needs: [get-env, Build]
+    if: |
+      needs.get-env.outputs.releaseEnv == 'dev' || 
+      github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -69,11 +80,14 @@ jobs:
   Deploy_test:
     name: "Test deploy ${{ needs.get-env.outputs.version }}"
     environment: test
-    needs: [get-env]
+    needs: [get-env, Build]
     if: |
-        needs.get-env.outputs.releaseEnv == 'test' ||
-        needs.get-env.outputs.releaseEnv == 'prod' ||
-        needs.get-env.outputs.releaseEnv == 'staging'
+        github.event.pull_request.merged == true ||
+        (
+          needs.get-env.outputs.releaseEnv == 'test' ||
+          needs.get-env.outputs.releaseEnv == 'prod' ||
+          needs.get-env.outputs.releaseEnv == 'staging'
+        )
     runs-on: ubuntu-latest
     steps:
       - name: Deploy
@@ -82,8 +96,11 @@ jobs:
     name: "Staging Deploy ${{  needs.get-env.outputs.version }}"
     environment: staging
     if: |
-      needs.get-env.outputs.releaseEnv == 'staging' ||
-      needs.get-env.outputs.releaseEnv == 'prod'
+        github.event.pull_request.merged == true ||
+        (
+          needs.get-env.outputs.releaseEnv == 'staging' ||
+          needs.get-env.outputs.releaseEnv == 'prod'
+        )
     needs: [Deploy_test, get-env]
     runs-on: ubuntu-latest
     steps:
